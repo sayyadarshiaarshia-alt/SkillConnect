@@ -1,35 +1,23 @@
-
 import { useState } from "react";
-import "./Login.css";
-import Dashboard from "./Dashboard";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [student, setStudent] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleLogin = async () => {
-    setError("");
-
-    if (!email.trim() || !password.trim()) {
-      setError("Please enter email and password");
-      return;
-    }
-
-    setLoading(true);
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/students/login",
+        "https://skillconnect-tbqg.onrender.com/api/students/login",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email: email.trim().toLowerCase(),
+            email: email,
             password: password,
           }),
         }
@@ -37,71 +25,69 @@ function Login() {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        setError(data.message || "Login failed");
-        return;
+      if (response.ok) {
+        setMessage("Login successful!");
+
+        console.log("Login response:", data);
+
+        // If your backend returns student data
+        if (data.student) {
+          localStorage.setItem(
+            "student",
+            JSON.stringify(data.student)
+          );
+        }
+
+        // Change this later if your project has a specific dashboard route
+        window.location.href = "/dashboard";
+      } else {
+        setMessage(data.message || "Invalid email or password");
       }
-
-      console.log("Login successful:", data);
-
-      setStudent(data.student);
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("Unable to connect to backend");
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Login error:", error);
+      setMessage("Unable to connect to backend");
     }
   };
 
-  if (student) {
-    return <Dashboard student={student} />;
-  }
-
   return (
-    <div className="login-page">
-      <div className="login-box">
+    <div>
+      <h2>Student Login</h2>
 
-        <h1>Student Login</h1>
+      <form onSubmit={handleLogin}>
+        <div>
+          <label>Email</label>
+          <br />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter email"
+            required
+          />
+        </div>
 
-        <p className="login-subtitle">
-          Login to continue to SkillConnect
-        </p>
+        <br />
 
-        <input
-          type="email"
-          placeholder="Enter Email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setError("");
-          }}
-        />
+        <div>
+          <label>Password</label>
+          <br />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter password"
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setError("");
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleLogin();
-            }
-          }}
-        />
+        <br />
 
-        {error && <p className="error">{error}</p>}
-
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-        >
-          {loading ? "Logging in..." : "Login"}
+        <button type="submit">
+          Login
         </button>
+      </form>
 
-      </div>
+      {message && <p>{message}</p>}
     </div>
   );
 }
