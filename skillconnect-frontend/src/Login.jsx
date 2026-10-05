@@ -1,16 +1,21 @@
 import { useState } from "react";
+import "./Login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    setMessage("");
+    setLoading(true);
+
     try {
       const response = await fetch(
-        "https://skillconnect-tbqg.onrender.com/api/students/login",
+        "https://skillconnect-backend-gj66.onrender.com/api/students/login",
         {
           method: "POST",
           headers: {
@@ -30,7 +35,6 @@ function Login() {
 
         console.log("Login response:", data);
 
-        // If your backend returns student data
         if (data.student) {
           localStorage.setItem(
             "student",
@@ -38,56 +42,77 @@ function Login() {
           );
         }
 
-        // Change this later if your project has a specific dashboard route
-        window.location.href = "/dashboard";
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 500);
       } else {
         setMessage(data.message || "Invalid email or password");
       }
     } catch (error) {
       console.error("Login error:", error);
       setMessage("Unable to connect to backend");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h2>Student Login</h2>
+    <div className="login-page">
+      <div className="login-box">
 
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email</label>
-          <br />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-            required
-          />
-        </div>
+        <h1>SkillConnect</h1>
 
-        <br />
+        <p className="login-subtitle">
+          Student Login
+        </p>
 
-        <div>
-          <label>Password</label>
-          <br />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            required
-          />
-        </div>
+        <form onSubmit={handleLogin}>
 
-        <br />
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
 
-        <button type="submit">
-          Login
-        </button>
-      </form>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
 
-      {message && <p>{message}</p>}
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
+
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          {message && (
+            <p
+              className={
+                message === "Login successful!"
+                  ? "success"
+                  : "error"
+              }
+            >
+              {message}
+            </p>
+          )}
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+        </form>
+
+      </div>
     </div>
   );
 }
