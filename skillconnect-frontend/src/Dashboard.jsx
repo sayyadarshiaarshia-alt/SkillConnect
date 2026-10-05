@@ -568,7 +568,7 @@ function Dashboard({ student }) {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/students/${student._id}`,
+        `https://skillconnect-backend-gj66.onrender.com/api/students/${student._id}`,
         {
           method: "PUT",
           headers: {
@@ -603,7 +603,7 @@ function Dashboard({ student }) {
 
     for (const skill of selectedSkills) {
       const response = await fetch(
-        `http://localhost:5000/api/questions/${encodeURIComponent(
+        `https://skillconnect-backend-gj66.onrender.com/api/questions/${encodeURIComponent(
           skill
         )}`
       );
@@ -775,7 +775,7 @@ function Dashboard({ student }) {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/questions/submit",
+          "https://skillconnect-backend-gj66.onrender.com/api/questions/submit",
           {
             method: "POST",
             headers: {
@@ -1248,7 +1248,7 @@ function Dashboard({ student }) {
       try {
         const response =
           await fetch(
-            "http://localhost:5000/api/questions/submit",
+            "https://skillconnect-backend-gj66.onrender.com/api/questions/submit",
             {
               method: "POST",
               headers: {
