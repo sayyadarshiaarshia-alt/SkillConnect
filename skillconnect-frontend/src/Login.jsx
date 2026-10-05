@@ -40,14 +40,14 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Save logged-in student
-        localStorage.setItem("student", JSON.stringify(data.student));
+        localStorage.setItem(
+          "student",
+          JSON.stringify(data.student)
+        );
 
         setMessage("Login successful! Opening dashboard...");
         setMessageType("success");
 
-        // Do NOT use /dashboard
-        // Reload App.jsx and show Dashboard based on localStorage
         setTimeout(() => {
           window.location.reload();
         }, 500);
@@ -84,7 +84,9 @@ function Login() {
         <form onSubmit={handleLogin}>
 
           <div className="input-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">
+              Email Address
+            </label>
 
             <input
               id="email"
@@ -97,7 +99,9 @@ function Login() {
           </div>
 
           <div className="input-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">
+              Password
+            </label>
 
             <input
               id="password"
