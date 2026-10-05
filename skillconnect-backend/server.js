@@ -13,10 +13,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Student routes
+// Routes
 app.use("/api/students", studentRoutes);
-
-// Question routes
 app.use("/api/questions", questionRoutes);
 
 console.log("Student routes loaded");
@@ -35,8 +33,10 @@ mongoose
   .then(() => {
     console.log("MongoDB Atlas connected successfully");
 
-    app.listen(5000, () => {
-      console.log("Server running on port 5000");
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((error) => {
